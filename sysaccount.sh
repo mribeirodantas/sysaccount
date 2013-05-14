@@ -36,8 +36,8 @@ function login() {
 
   read -p "Login: " LOGIN
   read -s -p "Password: " PASS
-  ACCOUNT=`grep "$LOGIN" ~/.passwd | awk -F ":" {' print $1 '}`
-  PASSWORD=`grep "$LOGIN" ~/.passwd | awk -F ":" {' print $2 '}`
+  ACCOUNT=`grep ":$LOGIN:" ~/.passwd | awk -F ":" {' print $1 '}`
+  PASSWORD=`grep ":$LOGIN:" ~/.passwd | awk -F ":" {' print $2 '}`
   PASS=`echo "$PASS" | shasum | awk -F " " {' print $1 '}`
 
   if [ "$LOGIN" == "$ACCOUNT" ] && [ "$PASS" == "$PASSWORD" ];
@@ -77,7 +77,7 @@ function useradd() {
   read -s -p "Password: " PASSWORD2
   if [ "$PASSWORD" == "$PASSWORD2" ];
   then
-    echo "$LOGIN:`echo $PASSWORD | shasum | awk -F " " {' print $1 '}`" >> ~/.passwd &&
+    echo ":$LOGIN:`echo $PASSWORD | shasum | awk -F " " {' print $1 '}`" >> ~/.passwd &&
     echo -e "\nUser $LOGIN was added successfully." ||
     echo -e "\nUser $LOGIN was not added."
   else
@@ -92,9 +92,9 @@ function userdel() {
   then
     login
   fi
-  if [ "`grep "$1" ~/.passwd`" != "" ];
+  if [ "`grep ":$1:" ~/.passwd`" != "" ];
   then
-    echo "`cat ~/.passwd | sed "/$1/ d"`" > ~/.passwd &&
+    echo "`cat ~/.passwd | sed "/:$1:/ d"`" > ~/.passwd &&
     echo "Useraccount $1 successfully removed." ||
     echo "Useraccount $1 was not removed."
     if [ "`cat ~/.passwd | grep ":"`" == "" ];
