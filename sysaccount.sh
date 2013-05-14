@@ -71,6 +71,11 @@ function useradd() {
   else
     LOGIN=$1
   fi
+  if [ -s ~/.passwd -a -r ~/.passwd ] && [ "`grep ";$LOGIN:" ~/.passwd`" != "" ];
+  then
+    echo "This username is already registered."
+    exit 0
+  fi
   read -s -p "Password: " PASSWORD
   #Newline
   echo
